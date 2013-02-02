@@ -18,7 +18,7 @@ class PhysNode {
 		const string getName() const;
 		const ofRectangle getBoundingBox() const;
 		inline const bool isMouseInside(ofMouseEventArgs & args) const;
-		void update();
+		void update(map<string, PhysNode*>& theNeighbors);
 	protected:
 		ofVec2f pos, vel, acc;
 		float size;
@@ -31,6 +31,7 @@ class Node: public PhysNode {
 		~Node();
 		void setDistance(float f);
 		const float getDistance() const;
+		const map<string, Edge*>& getEdges() const;
 		const bool isInQ() const;
 		void setInQ(const bool q);
 		void process() const;
@@ -57,6 +58,7 @@ class Edge: public PhysNode {
 		void setCost(const float td);
 		void resetMinCost();
 		float getCost() const;
+		const map<string, Node*>& getNodes() const;
 		void addNode(Node* n);
 		static ofEvent<Node> addNodeToQ;
 		static ofEvent<Edge> addEdgeToGraph;

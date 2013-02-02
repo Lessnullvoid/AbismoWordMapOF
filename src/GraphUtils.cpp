@@ -27,7 +27,13 @@ const ofRectangle PhysNode::getBoundingBox() const{
 	ofRectangle r = ofRectangle(pos.x-size/2, pos.y-size/2, size, size);
 }
 
-void PhysNode::update(){
+void PhysNode::update(map<string, PhysNode*>& theNeighbors){
+	// acceleration is equal to the difference between 2 nodes' positions
+	acc = ofVec2f(0,0);
+	for(map<string, PhysNode*>::iterator it = theNeighbors.begin(); it != theNeighbors.end(); ++it){
+		acc += ((it->second)->pos)-pos;
+	}
+
 	vel += acc;
 	pos += vel;
 }
@@ -71,6 +77,10 @@ const bool Node::isInQ() const{
 }
 void Node::setInQ(const bool q){
 	bInQ = q;
+}
+
+const map<string, Edge*>& Node::getEdges() const{
+	return theEdges;
 }
 
 void Node::process() const{
@@ -143,6 +153,10 @@ void Edge::resetMinCost(){
 
 float Edge::getCost() const{
 	return minCost;
+}
+
+const map<string, Node*>& Edge::getNodes() const{
+	return theNodes;
 }
 
 void Edge::addNode(Node* n){
@@ -255,7 +269,8 @@ void Graph::update(){
 	for (map<string,Edge*>::const_iterator it=theEdges.begin(); it!=theEdges.end(); ++it){
 		Edge* e = it->second;
 		if(e){
-			e->update();
+			// TODO: e->update()
+			//e->update();
 			ofRectangle er = e->getBoundingBox();
 			// add top left
 			collisionGroups.at(coordToSet(er.x, er.y)).insert(e);
