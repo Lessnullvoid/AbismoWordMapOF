@@ -13,7 +13,7 @@ PhysNode::PhysNode(){
 }
 PhysNode::~PhysNode(){}
 
-void PhysNode::setAcceleration(const ofVec2f acc_){
+void PhysNode::setAcceleration(const ofVec2f& acc_){
 	acc = acc_;
 }
 void PhysNode::setSize(const float size_){
@@ -41,8 +41,7 @@ inline const bool PhysNode::isMouseInside(ofMouseEventArgs & args) const{
 //////////////////////////////////
 ofEvent<Node> Node::addNodeToGraph = ofEvent<Node>();
 
-Node::Node(const string name_){
-	// TODO: super(); ???
+Node::Node(const string name_): PhysNode(){
 	name = name_;
 	distance = 1e9;
 	ofNotifyEvent(Node::addNodeToGraph, *this);
@@ -105,8 +104,7 @@ void Node::mouseReleased(ofMouseEventArgs & args){}
 ofEvent<Node> Edge::addNodeToQ = ofEvent<Node>();
 ofEvent<Edge> Edge::addEdgeToGraph = ofEvent<Edge>();
 
-Edge::Edge(const string name_, const int cost_){
-	// TODO: super(); ???
+Edge::Edge(const string name_, const int cost_): PhysNode(){
 	name = name_;
 	cost = cost_;
 	minCost = 1e9;
