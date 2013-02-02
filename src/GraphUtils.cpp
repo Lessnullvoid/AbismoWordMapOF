@@ -1,11 +1,3 @@
-//
-//  GraphUtils.cpp
-//  AbismoTwitterOF
-//
-//  Created by thiago on 1/23/13.
-//
-//
-
 #include "GraphUtils.h"
 #include "ofAppRunner.h"
 #include "ofLog.h"

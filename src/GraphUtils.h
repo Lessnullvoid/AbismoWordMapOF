@@ -1,11 +1,3 @@
-//
-//  GraphUtils.h
-//  AbismoTwitterOF
-//
-//  Created by thiago on 1/23/13.
-//
-//
-
 #pragma once
 
 #include "ofConstants.h"
