@@ -25,13 +25,13 @@ void testApp::setup(){
 	mFontSize = mFont.getSize();
 
 	//////////// graph
-	//testGraphSetup();
+	testGraphSetup();
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
 	//testGraphUpdate();
-	if(ofGetFrameNum()%100 == 0){
+	if(ofGetFrameNum()%120 == 0){
 		cout << ofGetFrameRate() << endl;
 	}
 }
@@ -89,8 +89,8 @@ void testApp::dragEvent(ofDragInfo dragInfo){
 //--------------------------------------------------------------
 void testApp::testGraphSetup(){
 	vector<Node*> someNodes;
-	int numNodes = 100;
-	int numEdges = 800;
+	int numNodes = 1000;
+	int numEdges = 8000;
 	for(int i=0; i<numNodes; ++i){
 		Node *n = new Node("v"+ofToString(i));
 		someNodes.push_back(n);
@@ -111,18 +111,22 @@ void testApp::testGraphSetup(){
 	Node *n0 = someNodes.at((int)ofRandom(someNodes.size()));
 	long long unsigned int t0 = AbsoluteToDuration(UpTime());
 	mGraph.calculateDists(*n0);
-	long long unsigned int et = AbsoluteToDuration(UpTime())-t0;
-	cout << "calculated from: " << n0->getName()+ " in: " << et << " millis"<<endl;
+	long long unsigned int t1 = AbsoluteToDuration(UpTime());
 	mGraph.orderGraph();
-	mGraph.printGraph();
+	long long unsigned int t2 = AbsoluteToDuration(UpTime());
+	//mGraph.printGraph();
+	cout << "calculated from: " << n0->getName()+ " in: " << (t1-t0) << " millis"<<endl;
+	cout << "ordered graph in: " << (t2-t1) << " millis"<<endl;
 }
 
 void testApp::testGraphUpdate(){
-	mGraph.calculateDists();
 	long long unsigned int t0 = AbsoluteToDuration(UpTime());
+	mGraph.calculateDists();
+	long long unsigned int t1 = AbsoluteToDuration(UpTime());
 	mGraph.orderGraph();
-	long long unsigned int et = AbsoluteToDuration(UpTime())-t0;
-	cout << "ordered graph in: " << et << " millis"<<endl;
+	long long unsigned int t2 = AbsoluteToDuration(UpTime());
+	cout << "calculated distance in: " << (t1-t0) << " millis"<<endl;
+	cout << "ordered graph in: " << (t2-t1) << " millis"<<endl;
 }
 
 // doesn't exclude empty words
