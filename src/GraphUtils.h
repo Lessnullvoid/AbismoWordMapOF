@@ -34,7 +34,6 @@ class Node: public PhysNode {
 		const bool isInQ() const;
 		void setInQ(const bool q);
 		void process() const;
-		void update();
 		void addEdge(Edge* e);
 		static ofEvent<Node> addNodeToGraph;
 		bool operator < (const Node &on) const;
@@ -58,7 +57,6 @@ class Edge: public PhysNode {
 		void setCost(const float td);
 		void resetMinCost();
 		float getCost() const;
-		void update();
 		void addNode(Node* n);
 		static ofEvent<Node> addNodeToQ;
 		static ofEvent<Edge> addEdgeToGraph;
