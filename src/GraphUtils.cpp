@@ -1,5 +1,6 @@
 #include "GraphUtils.h"
 #include "ofAppRunner.h"
+#include "ofGraphics.h"
 #include "ofLog.h"
 
 #define GROUP_SIZE 100
@@ -7,7 +8,7 @@
 PhysNode::PhysNode(){
 	size = 10;
 	name = "";
-	pos = ofVec2f(0,0);
+	pos = ofVec2f(ofRandom(ofGetWidth()),ofRandom(ofGetHeight()));
 	vel = ofVec2f(0,0);
 	ofRegisterMouseEvents(this);
 }
@@ -37,7 +38,14 @@ const ofRectangle PhysNode::getBoundingBox() const{
 
 void PhysNode::update(){
 	pos += vel;
+	pos.x = ofClamp(pos.x, size/2, ofGetWidth()-size/2-1);
+	pos.y = ofClamp(pos.y, size/2, ofGetHeight()-size/2-1);
 }
+void PhysNode::draw(){
+	ofSetColor(100,100);
+	ofRect(getBoundingBox());
+}
+
 
 inline const bool PhysNode::isMouseInside(ofMouseEventArgs & args) const{
 	return ((args.x > (pos.x-size/2)) && (args.x < (pos.x+size/2)) && (args.y > (pos.y-size/2)) && (args.y < (pos.y+size/2)));
@@ -217,7 +225,7 @@ Graph::Graph(){
 	//
 	collisionGroupSize = GROUP_SIZE;
 	// init sets
-	for(int i=0; i<(ofGetHeight()*ofGetWidth())/(collisionGroupSize*collisionGroupSize); ++i){
+	for(int i=0; i<(ofGetHeight()/collisionGroupSize*ofGetWidth()/collisionGroupSize); ++i){
 		collisionGroups.push_back(set<PhysNode*>());
 	}
 }
@@ -343,10 +351,25 @@ void Graph::update(){
 	}
 }
 
-void Graph::draw(){}
+void Graph::draw(){
+	// draw Edges
+	for (map<string,Edge*>::const_iterator it=theEdges.begin(); it!=theEdges.end(); ++it){
+		Edge* e = it->second;
+		if(e){
+			e->draw();
+		}
+	}
+	// draw Nodes
+	for (map<string,Node*>::const_iterator it=theNodes.begin(); it!=theNodes.end(); ++it){
+		Node* n = it->second;
+		if(n){
+			n->draw();
+		}
+	}
+}
 
 inline const int Graph::coordToSet(float x, float y) const {
-	return float( (x/collisionGroupSize) + (y/collisionGroupSize)*(ofGetWidth()/collisionGroupSize) );
+	return int(x/collisionGroupSize) + int(y/collisionGroupSize)*int(ofGetWidth()/collisionGroupSize);
 }
 
 // for debug

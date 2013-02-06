@@ -22,6 +22,7 @@ class PhysNode {
 		const ofRectangle getBoundingBox() const;
 		inline const bool isMouseInside(ofMouseEventArgs & args) const;
 		void update();
+		void draw();
 		void mouseMoved(ofMouseEventArgs & args);
 		void mouseDragged(ofMouseEventArgs & args);
 		void mousePressed(ofMouseEventArgs & args);
