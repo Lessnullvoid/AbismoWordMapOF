@@ -8,19 +8,22 @@
 #include<set>
 
 class Edge;
+class Node;
 
 class PhysNode {
 	public:
 		PhysNode();
 		~PhysNode();
-		void setAcceleration(const ofVec2f& acc_);
+		void setVelocity(const ofVec2f& vel_);
 		void setSize(const float size_);
 		const string getName() const;
+		const ofVec2f& getPos() const;
+		const float& getSize() const;
 		const ofRectangle getBoundingBox() const;
 		inline const bool isMouseInside(ofMouseEventArgs & args) const;
-		void update(map<string, PhysNode*>& theNeighbors);
+		void update();
 	protected:
-		ofVec2f pos, vel, acc;
+		ofVec2f pos, vel;
 		float size;
 		string name;
 };
@@ -45,6 +48,7 @@ class Node: public PhysNode {
 		void mouseDragged(ofMouseEventArgs & args);
 		void mousePressed(ofMouseEventArgs & args);
 		void mouseReleased(ofMouseEventArgs & args);
+		void update();
 	protected:
 		float distance;
 		map<string, Edge*> theEdges;
@@ -70,6 +74,7 @@ class Edge: public PhysNode {
 		void mouseDragged(ofMouseEventArgs & args);
 		void mousePressed(ofMouseEventArgs & args);
 		void mouseReleased(ofMouseEventArgs & args);
+		void update();
 	protected:
 		float minCost, cost, avgCost;
 		map<string,Node*> theNodes;

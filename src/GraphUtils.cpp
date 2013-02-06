@@ -9,12 +9,11 @@ PhysNode::PhysNode(){
 	name = "";
 	pos = ofVec2f(0,0);
 	vel = ofVec2f(0,0);
-	acc = ofVec2f(0,0);
 }
 PhysNode::~PhysNode(){}
 
-void PhysNode::setAcceleration(const ofVec2f& acc_){
-	acc = acc_;
+void PhysNode::setVelocity(const ofVec2f& vel_){
+	vel = vel_;
 }
 void PhysNode::setSize(const float size_){
 	size = size_;
@@ -22,19 +21,18 @@ void PhysNode::setSize(const float size_){
 const string PhysNode::getName() const{
 	return name;
 }
+const ofVec2f& PhysNode::getPos() const{
+	return pos;
+}
+const float& PhysNode::getSize() const{
+	return size;
+}
 
 const ofRectangle PhysNode::getBoundingBox() const{
 	ofRectangle r = ofRectangle(pos.x-size/2, pos.y-size/2, size, size);
 }
 
-void PhysNode::update(map<string, PhysNode*>& theNeighbors){
-	// acceleration is equal to the difference between 2 nodes' positions
-	acc = ofVec2f(0,0);
-	for(map<string, PhysNode*>::iterator it = theNeighbors.begin(); it != theNeighbors.end(); ++it){
-		acc += ((it->second)->pos)-pos;
-	}
-
-	vel += acc;
+void PhysNode::update(){
 	pos += vel;
 }
 
@@ -108,6 +106,12 @@ void Node::mousePressed(ofMouseEventArgs & args){
 }
 void Node::mouseReleased(ofMouseEventArgs & args){}
 
+void Node::update(){
+	////// TODO: DO SOME STUFF
+	// then:
+	PhysNode::update();
+}
+
 //////////////////////////////////
 //////////////////////////////////
 //////////////////////////////////
@@ -176,6 +180,11 @@ void Edge::mousePressed(ofMouseEventArgs & args){
 }
 void Edge::mouseReleased(ofMouseEventArgs & args){}
 
+void Edge::update(){
+	////// TODO: DO SOME STUFF
+	// then:
+	PhysNode::update();
+}
 
 //////////////////////////////////////
 //////////////////////////////////////
@@ -269,8 +278,7 @@ void Graph::update(){
 	for (map<string,Edge*>::const_iterator it=theEdges.begin(); it!=theEdges.end(); ++it){
 		Edge* e = it->second;
 		if(e){
-			// TODO: e->update()
-			//e->update();
+			e->update();
 			ofRectangle er = e->getBoundingBox();
 			// add top left
 			collisionGroups.at(coordToSet(er.x, er.y)).insert(e);
