@@ -32,8 +32,7 @@ const float& PhysNode::getSize() const{
 }
 
 const ofRectangle PhysNode::getBoundingBox() const{
-	ofRectangle r = ofRectangle(pos.x-size/2, pos.y-size/2, size, size);
-	return r;
+	return ofRectangle(pos.x-size/2, pos.y-size/2, size, size);
 }
 
 void PhysNode::update(){
