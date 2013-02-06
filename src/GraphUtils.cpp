@@ -219,7 +219,7 @@ Graph::Graph(){
 	collisionGroupSize = GROUP_SIZE;
 	// init sets
 	for(int i=0; i<(ofGetHeight()*ofGetWidth())/(collisionGroupSize*collisionGroupSize); ++i){
-		collisionGroups.push_back(set<Edge*>());
+		collisionGroups.push_back(set<PhysNode*>());
 	}
 }
 
@@ -310,24 +310,38 @@ void Graph::update(){
 			collisionGroups.at(coordToSet(er.x+er.width, er.y+er.height)).insert(e);
 		}
 	}
+	// update Nodes and add them to collision groups
+	for (map<string,Node*>::const_iterator it=theNodes.begin(); it!=theNodes.end(); ++it){
+		Node* n = it->second;
+		if(n){
+			n->update();
+			ofRectangle er = n->getBoundingBox();
+			// add top left
+			collisionGroups.at(coordToSet(er.x, er.y)).insert(n);
+			// add bottom left
+			collisionGroups.at(coordToSet(er.x, er.y+er.height)).insert(n);
+			// add top right
+			collisionGroups.at(coordToSet(er.x+er.width, er.y)).insert(n);
+			// add bottom right
+			collisionGroups.at(coordToSet(er.x+er.width, er.y+er.height)).insert(n);
+		}
+	}
 	// check collision
 	for(int i=0; i<collisionGroups.size(); ++i){
-		set<Edge*> group = collisionGroups.at(i);
+		set<PhysNode*> group = collisionGroups.at(i);
 		// for all nodes in each group, check if they collide with each other
-		for(set<Edge*>::const_iterator it=group.begin(); it!=group.end(); ++it){
-			Edge* e0 = *it;
-			// TODO: find a better way to do this
-			set<Edge*>::const_iterator jt=it;
+		for(set<PhysNode*>::const_iterator it=group.begin(); it!=group.end(); ++it){
+			PhysNode* pn0 = *it;
+			set<PhysNode*>::const_iterator jt=it;
 			for(++jt; jt!=group.end(); ++jt){
-				Edge* e1 = *jt;
-				// TODO: implement this in Edge or PhysNode
-				// e0->checkCollision(e1);
+				PhysNode* pn1 = *jt;
+				// TODO: implement this in PhysNode
+				// pn0->checkCollision(pn1);
 			}
 		}
 		// clear set after collision checks
 		group.clear();
 	}
-	// TODO: maybe update Nodes
 }
 
 void Graph::draw(){}

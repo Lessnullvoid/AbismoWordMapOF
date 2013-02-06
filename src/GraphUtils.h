@@ -103,6 +103,6 @@ class Graph {
 		queue<Node*> theQ;
 	private:
 		int collisionGroupSize;
-		vector<set<Edge*> > collisionGroups;
+		vector<set<PhysNode*> > collisionGroups;
 		inline const int coordToSet(float x, float y) const;
 };
