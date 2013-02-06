@@ -5,7 +5,7 @@
 #define GROUP_SIZE 100
 
 PhysNode::PhysNode(){
-	size = 0;
+	size = 10;
 	name = "";
 	pos = ofVec2f(0,0);
 	vel = ofVec2f(0,0);
@@ -33,6 +33,7 @@ const float& PhysNode::getSize() const{
 
 const ofRectangle PhysNode::getBoundingBox() const{
 	ofRectangle r = ofRectangle(pos.x-size/2, pos.y-size/2, size, size);
+	return r;
 }
 
 void PhysNode::update(){
