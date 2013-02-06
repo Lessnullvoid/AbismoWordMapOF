@@ -9,8 +9,11 @@ PhysNode::PhysNode(){
 	name = "";
 	pos = ofVec2f(0,0);
 	vel = ofVec2f(0,0);
+	ofRegisterMouseEvents(this);
 }
-PhysNode::~PhysNode(){}
+PhysNode::~PhysNode(){
+	ofUnregisterMouseEvents(this);
+}
 
 void PhysNode::setVelocity(const ofVec2f& vel_){
 	vel = vel_;
@@ -40,6 +43,11 @@ inline const bool PhysNode::isMouseInside(ofMouseEventArgs & args) const{
 	return ((args.x > (pos.x-size/2)) && (args.x < (pos.x+size/2)) && (args.y > (pos.y-size/2)) && (args.y < (pos.y+size/2)));
 }
 
+void PhysNode::mouseMoved(ofMouseEventArgs & args){}
+void PhysNode::mouseDragged(ofMouseEventArgs & args){}
+void PhysNode::mousePressed(ofMouseEventArgs & args){}
+void PhysNode::mouseReleased(ofMouseEventArgs & args){}
+
 //////////////////////////////////
 //////////////////////////////////
 //////////////////////////////////
@@ -49,12 +57,9 @@ Node::Node(const string name_): PhysNode(){
 	name = name_;
 	distance = 1e9;
 	ofNotifyEvent(Node::addNodeToGraph, *this);
-	ofRegisterMouseEvents(this);
 }
 
-Node::~Node(){
-	ofUnregisterMouseEvents(this);
-}
+Node::~Node(){}
 
 bool Node::operator < (const Node &on) const{
 	return distance < on.distance;
@@ -97,14 +102,11 @@ void Node::addEdge(Edge* e){
 	}
 }
 
-void Node::mouseMoved(ofMouseEventArgs & args){}
-void Node::mouseDragged(ofMouseEventArgs & args){}
 void Node::mousePressed(ofMouseEventArgs & args){
 	if(this->isMouseInside(args)){
 		ofNotifyEvent(NodeClickEvent, *this);
 	}
 }
-void Node::mouseReleased(ofMouseEventArgs & args){}
 
 void Node::update(){
 	// acceleration is equal to the sum of the difference between this node's position and its neighbors'
@@ -181,14 +183,11 @@ void Edge::addNode(Node* n){
 }
 
 // click events for triggering sub-menu
-void Edge::mouseMoved(ofMouseEventArgs & args){}
-void Edge::mouseDragged(ofMouseEventArgs & args){}
 void Edge::mousePressed(ofMouseEventArgs & args){
 	if(this->isMouseInside(args)){
 		ofNotifyEvent(EdgeClickEvent, *this);
 	}
 }
-void Edge::mouseReleased(ofMouseEventArgs & args){}
 
 void Edge::update(){
 	// acceleration is equal to the sum of the difference between this node's position and its neighbors'

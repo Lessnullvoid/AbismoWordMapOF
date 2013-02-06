@@ -22,6 +22,10 @@ class PhysNode {
 		const ofRectangle getBoundingBox() const;
 		inline const bool isMouseInside(ofMouseEventArgs & args) const;
 		void update();
+		void mouseMoved(ofMouseEventArgs & args);
+		void mouseDragged(ofMouseEventArgs & args);
+		void mousePressed(ofMouseEventArgs & args);
+		void mouseReleased(ofMouseEventArgs & args);
 	protected:
 		ofVec2f pos, vel;
 		float size;
@@ -44,10 +48,7 @@ class Node: public PhysNode {
 		static bool sortComp(Node *n0, Node *n1);
 		// click events for re-sorting
 		ofEvent<Node> NodeClickEvent;
-		void mouseMoved(ofMouseEventArgs & args);
-		void mouseDragged(ofMouseEventArgs & args);
 		void mousePressed(ofMouseEventArgs & args);
-		void mouseReleased(ofMouseEventArgs & args);
 		void update();
 	protected:
 		float distance;
@@ -70,10 +71,7 @@ class Edge: public PhysNode {
 		static bool sortComp(Edge *e0, Edge *e1);
 		// click events for triggering sub-menu
 		ofEvent<Edge> EdgeClickEvent;
-		void mouseMoved(ofMouseEventArgs & args);
-		void mouseDragged(ofMouseEventArgs & args);
 		void mousePressed(ofMouseEventArgs & args);
-		void mouseReleased(ofMouseEventArgs & args);
 		void update();
 	protected:
 		float minCost, cost, avgCost;
