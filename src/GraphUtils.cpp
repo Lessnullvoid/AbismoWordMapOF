@@ -10,11 +10,8 @@ PhysNode::PhysNode(){
 	name = "";
 	pos = ofVec2f(ofRandom(ofGetWidth()),ofRandom(ofGetHeight()));
 	vel = ofVec2f(0,0);
-	ofRegisterMouseEvents(this);
 }
-PhysNode::~PhysNode(){
-	ofUnregisterMouseEvents(this);
-}
+PhysNode::~PhysNode(){}
 
 void PhysNode::setVelocity(const ofVec2f& vel_){
 	vel = vel_;
@@ -51,11 +48,6 @@ inline const bool PhysNode::isMouseInside(ofMouseEventArgs & args) const{
 	return ((args.x > (pos.x-size/2)) && (args.x < (pos.x+size/2)) && (args.y > (pos.y-size/2)) && (args.y < (pos.y+size/2)));
 }
 
-void PhysNode::mouseMoved(ofMouseEventArgs & args){}
-void PhysNode::mouseDragged(ofMouseEventArgs & args){}
-void PhysNode::mousePressed(ofMouseEventArgs & args){}
-void PhysNode::mouseReleased(ofMouseEventArgs & args){}
-
 //////////////////////////////////
 //////////////////////////////////
 //////////////////////////////////
@@ -65,9 +57,12 @@ Node::Node(const string name_): PhysNode(){
 	name = name_;
 	distance = 1e9;
 	ofNotifyEvent(Node::addNodeToGraph, *this);
+	ofRegisterMouseEvents(this);
 }
 
-Node::~Node(){}
+Node::~Node(){
+	ofUnregisterMouseEvents(this);
+}
 
 bool Node::operator < (const Node &on) const{
 	return distance < on.distance;
@@ -110,11 +105,14 @@ void Node::addEdge(Edge* e){
 	}
 }
 
+void Node::mouseMoved(ofMouseEventArgs & args){}
+void Node::mouseDragged(ofMouseEventArgs & args){}
 void Node::mousePressed(ofMouseEventArgs & args){
 	if(this->isMouseInside(args)){
 		ofNotifyEvent(NodeClickEvent, *this);
 	}
 }
+void Node::mouseReleased(ofMouseEventArgs & args){}
 
 void Node::update(){
 	// acceleration is equal to the sum of the difference between this node's position and its neighbors'
@@ -143,8 +141,11 @@ Edge::Edge(const string name_, const int cost_): PhysNode(){
 	cost = cost_;
 	minCost = 1e9;
 	ofNotifyEvent(Edge::addEdgeToGraph, *this);
+	ofRegisterMouseEvents(this);
 }
-Edge::~Edge(){}
+Edge::~Edge(){
+	ofUnregisterMouseEvents(this);
+}
 
 bool Edge::operator < (const Edge &oe) const{
 	return minCost < oe.minCost;
@@ -191,11 +192,14 @@ void Edge::addNode(Node* n){
 }
 
 // click events for triggering sub-menu
+void Edge::mouseMoved(ofMouseEventArgs & args){}
+void Edge::mouseDragged(ofMouseEventArgs & args){}
 void Edge::mousePressed(ofMouseEventArgs & args){
 	if(this->isMouseInside(args)){
 		ofNotifyEvent(EdgeClickEvent, *this);
 	}
 }
+void Edge::mouseReleased(ofMouseEventArgs & args){}
 
 void Edge::update(){
 	// acceleration is equal to the sum of the difference between this node's position and its neighbors'
@@ -242,6 +246,8 @@ Graph::~Graph(){
 void Graph::addNodeToGraph(Node& n){
 	theNodes[n.getName()] = &n;
 	orderedNodes.push_back(&n);
+	// TODO: when clicked, not only calculate distances, but also:
+	//       (1) update PhysNode sizes
 	ofAddListener(n.NodeClickEvent, this, &Graph::calculateDists);
 }
 void Graph::addEdgeToGraph(Edge& e){
@@ -356,7 +362,7 @@ void Graph::draw(){
 	for (map<string,Edge*>::const_iterator it=theEdges.begin(); it!=theEdges.end(); ++it){
 		Edge* e = it->second;
 		if(e){
-			e->draw();
+			//e->draw();
 		}
 	}
 	// draw Nodes
