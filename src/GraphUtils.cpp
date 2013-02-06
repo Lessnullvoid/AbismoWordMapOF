@@ -107,8 +107,18 @@ void Node::mousePressed(ofMouseEventArgs & args){
 void Node::mouseReleased(ofMouseEventArgs & args){}
 
 void Node::update(){
-	////// TODO: DO SOME STUFF
-	// then:
+	// acceleration is equal to the sum of the difference between this node's position and its neighbors'
+	vel = ofVec2f(0,0);
+	for(map<string, Edge*>::const_iterator it=theEdges.begin(); it!=theEdges.end(); ++it){
+		// discount the nodes' sizes so it stops accelerating when they're touching
+		ofVec2f diff = (it->second)->getPos()-pos;
+		float mag = diff.length();
+		mag -= (it->second)->getSize()/2 + size/2;
+		diff.normalize().scale(mag);
+		vel += diff;
+	}
+	
+	// call parent
 	PhysNode::update();
 }
 
@@ -181,8 +191,18 @@ void Edge::mousePressed(ofMouseEventArgs & args){
 void Edge::mouseReleased(ofMouseEventArgs & args){}
 
 void Edge::update(){
-	////// TODO: DO SOME STUFF
-	// then:
+	// acceleration is equal to the sum of the difference between this node's position and its neighbors'
+	vel = ofVec2f(0,0);
+	for(map<string, Node*>::const_iterator it=theNodes.begin(); it!=theNodes.end(); ++it){
+		// discount the nodes' sizes so it stops accelerating when they're touching
+		ofVec2f diff = (it->second)->getPos()-pos;
+		float mag = diff.length();
+		mag -= (it->second)->getSize()/2 + size/2;
+		diff.normalize().scale(mag);
+		vel += diff;
+	}
+	
+	// call parent
 	PhysNode::update();
 }
 
