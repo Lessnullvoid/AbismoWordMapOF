@@ -30,7 +30,11 @@ void testApp::setup(){
 
 //--------------------------------------------------------------
 void testApp::update(){
-	//testGraphUpdate();
+	long long unsigned int t0 = AbsoluteToDuration(UpTime());
+	mGraph.update();
+	long long unsigned int t1 = AbsoluteToDuration(UpTime());
+	cout << "update took: " << (t1-t0) << " millis"<<endl;
+
 	if(ofGetFrameNum()%120 == 0){
 		cout << ofGetFrameRate() << endl;
 	}
@@ -38,7 +42,7 @@ void testApp::update(){
 
 //--------------------------------------------------------------
 void testApp::draw(){
-
+	mGraph.draw();
 }
 
 //--------------------------------------------------------------
@@ -89,8 +93,8 @@ void testApp::dragEvent(ofDragInfo dragInfo){
 //--------------------------------------------------------------
 void testApp::testGraphSetup(){
 	vector<Node*> someNodes;
-	int numNodes = 1000;
-	int numEdges = 8000;
+	int numNodes = 100;
+	int numEdges = 800;
 	for(int i=0; i<numNodes; ++i){
 		Node *n = new Node("v"+ofToString(i));
 		someNodes.push_back(n);
