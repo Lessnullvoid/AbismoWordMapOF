@@ -58,9 +58,8 @@ void PhysNode::draw(){
 	ofSetColor(100,100);
 	ofRect(boundingBox);
 	ofSetColor(255);
-	mFont.drawString(name, pos.x-mFont.stringWidth(name)/2, pos.y);
+	mFont.drawString(name, pos.x-boundingBox.width/2, pos.y);
 }
-
 
 inline const bool PhysNode::isMouseInside(ofMouseEventArgs & args) const {
 	return boundingBox.inside(args.x, args.y);
