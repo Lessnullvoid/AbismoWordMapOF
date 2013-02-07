@@ -53,9 +53,11 @@ void PhysNode::draw(){
 	ofSetColor(255);
 	ofCircle(pos,size/2);
 
-	std::map<int,ofTrueTypeFont>::iterator it = fontMap.lower_bound((int)10);
+	std::map<int,ofTrueTypeFont>::iterator it = fontMap.lower_bound(size/2);
+	// keep it in-bounds
+	(it == fontMap.end())?(--it):(it);
 	ofTrueTypeFont mFont = (it->second);
-	mFont.drawString(name, pos.x, pos.y);
+	mFont.drawString(name, pos.x-size/2, pos.y);
 }
 
 
