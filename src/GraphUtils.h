@@ -13,20 +13,21 @@ class Node;
 
 class PhysNode {
 	public:
-		PhysNode();
+		PhysNode(const string name_);
 		~PhysNode();
 		void setVelocity(const ofVec2f& vel_);
 		void setSize(const float size_);
 		const string getName() const;
 		const ofVec2f& getPos() const;
 		const float& getSize() const;
-		const ofRectangle getBoundingBox() const;
+		const ofRectangle& getBoundingBox() const;
 		inline const bool isMouseInside(ofMouseEventArgs & args) const;
 		void draw();
 	protected:
 		ofVec2f pos, vel;
 		float size;
 		string name;
+		ofRectangle boundingBox;
 		// static font map
 		static map<int, ofTrueTypeFont> fontMap;
 };

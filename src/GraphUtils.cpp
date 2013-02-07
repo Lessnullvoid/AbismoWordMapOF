@@ -9,9 +9,8 @@
 
 map<int,ofTrueTypeFont> PhysNode::fontMap = map<int,ofTrueTypeFont>();
 
-PhysNode::PhysNode(){
-	size = 20;
-	name = "";
+PhysNode::PhysNode(const string name_){
+	name = name_;
 	pos = ofVec2f(ofRandom(ofGetWidth()),ofRandom(ofGetHeight()));
 	vel = ofVec2f(0,0);
 	if(fontMap.size() < 1){
@@ -22,6 +21,7 @@ PhysNode::PhysNode(){
 			fontMap[fs] = ottf;
 		}
 	}
+	setSize(20);
 }
 PhysNode::~PhysNode(){}
 
@@ -30,6 +30,11 @@ void PhysNode::setVelocity(const ofVec2f& vel_){
 }
 void PhysNode::setSize(const float size_){
 	size = size_;
+	std::map<int,ofTrueTypeFont>::iterator it = fontMap.lower_bound(size/2);
+	// keep it in-bounds
+	(it == fontMap.end())?(--it):(it);
+	ofTrueTypeFont mFont = (it->second);
+	boundingBox = mFont.getStringBoundingBox(name, pos.x-mFont.stringWidth(name)/2, pos.y);
 }
 const string PhysNode::getName() const{
 	return name;
@@ -41,28 +46,24 @@ const float& PhysNode::getSize() const{
 	return size;
 }
 
-const ofRectangle PhysNode::getBoundingBox() const{
-	return ofRectangle(pos.x-size/2, pos.y-size/2, size, size);
+const ofRectangle& PhysNode::getBoundingBox() const{
+	return boundingBox;
 }
 
 void PhysNode::draw(){
-	ofFill();
-	ofSetColor(100,100);
-	ofCircle(pos,size/2);
-	ofNoFill();
-	ofSetColor(255);
-	ofCircle(pos,size/2);
-
 	std::map<int,ofTrueTypeFont>::iterator it = fontMap.lower_bound(size/2);
 	// keep it in-bounds
 	(it == fontMap.end())?(--it):(it);
 	ofTrueTypeFont mFont = (it->second);
-	mFont.drawString(name, pos.x-size/2, pos.y);
+	ofSetColor(100,100);
+	ofRect(boundingBox);
+	ofSetColor(255);
+	mFont.drawString(name, pos.x-mFont.stringWidth(name)/2, pos.y);
 }
 
 
-inline const bool PhysNode::isMouseInside(ofMouseEventArgs & args) const{
-	return ((args.x > (pos.x-size/2)) && (args.x < (pos.x+size/2)) && (args.y > (pos.y-size/2)) && (args.y < (pos.y+size/2)));
+inline const bool PhysNode::isMouseInside(ofMouseEventArgs & args) const {
+	return boundingBox.inside(args.x, args.y);
 }
 
 //////////////////////////////////
@@ -70,8 +71,8 @@ inline const bool PhysNode::isMouseInside(ofMouseEventArgs & args) const{
 //////////////////////////////////
 ofEvent<Node> Node::addNodeToGraph = ofEvent<Node>();
 
-Node::Node(const string name_): PhysNode(){
-	name = name_;
+Node::Node(const string name_): PhysNode(name_){
+	//name = name_;
 	distance = 1e9;
 	ofNotifyEvent(Node::addNodeToGraph, *this);
 	ofRegisterMouseEvents(this);
@@ -127,7 +128,7 @@ void Node::mouseDragged(ofMouseEventArgs & args){}
 void Node::mousePressed(ofMouseEventArgs & args){
 	if(this->isMouseInside(args)){
 		// DEBUG
-		size += 10;
+		setSize(size+10);
 		ofNotifyEvent(NodeClickEvent, *this);
 	}
 }
@@ -139,8 +140,7 @@ void Node::mouseReleased(ofMouseEventArgs & args){}
 ofEvent<Node> Edge::addNodeToQ = ofEvent<Node>();
 ofEvent<Edge> Edge::addEdgeToGraph = ofEvent<Edge>();
 
-Edge::Edge(const string name_, const int cost_): PhysNode(){
-	name = name_;
+Edge::Edge(const string name_, const int cost_): PhysNode(name_){
 	cost = cost_;
 	minCost = 1e9;
 	ofNotifyEvent(Edge::addEdgeToGraph, *this);
@@ -200,7 +200,7 @@ void Edge::mouseDragged(ofMouseEventArgs & args){}
 void Edge::mousePressed(ofMouseEventArgs & args){
 	if(this->isMouseInside(args)){
 		// DEBUG
-		size += 10;
+		setSize(size+10);
 		ofNotifyEvent(EdgeClickEvent, *this);
 	}
 }
