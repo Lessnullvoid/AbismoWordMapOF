@@ -31,7 +31,7 @@ void testApp::setup(){
 //--------------------------------------------------------------
 void testApp::update(){
 	long long unsigned int t0 = AbsoluteToDuration(UpTime());
-	mGraph.update();
+	// put stuff to time here
 	long long unsigned int t1 = AbsoluteToDuration(UpTime());
 	cout << "update took: " << (t1-t0) << " millis"<<endl;
 

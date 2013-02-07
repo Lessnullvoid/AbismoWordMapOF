@@ -21,8 +21,6 @@ class PhysNode {
 		const float& getSize() const;
 		const ofRectangle getBoundingBox() const;
 		inline const bool isMouseInside(ofMouseEventArgs & args) const;
-		void fixCollision(PhysNode& on) const;
-		void update();
 		void draw();
 	protected:
 		ofVec2f pos, vel;
@@ -50,7 +48,6 @@ class Node: public PhysNode {
 		void mouseDragged(ofMouseEventArgs & args);
 		void mousePressed(ofMouseEventArgs & args);
 		void mouseReleased(ofMouseEventArgs & args);
-		void update();
 	protected:
 		float distance;
 		map<string, Edge*> theEdges;
@@ -76,7 +73,6 @@ class Edge: public PhysNode {
 		void mouseDragged(ofMouseEventArgs & args);
 		void mousePressed(ofMouseEventArgs & args);
 		void mouseReleased(ofMouseEventArgs & args);
-		void update();
 	protected:
 		float minCost, cost, avgCost;
 		map<string,Node*> theNodes;
@@ -103,8 +99,4 @@ class Graph {
 		vector<Node*> orderedNodes;
 		vector<Edge*> orderedEdges;
 		queue<Node*> theQ;
-	private:
-		int collisionGroupSize;
-		vector<set<PhysNode*> > collisionGroups;
-		inline const int coordToSet(float x, float y) const;
 };
