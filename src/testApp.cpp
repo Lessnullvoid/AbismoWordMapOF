@@ -1,9 +1,5 @@
 #include "testApp.h"
 
-#define MAX_FONT_SIZE 64
-#define MIN_FONT_SIZE 16
-#define FONT_NAME "verdana.ttf"
-
 //--------------------------------------------------------------
 testApp::testApp(): ofBaseApp(){ }
 
@@ -11,30 +7,12 @@ testApp::testApp(): ofBaseApp(){ }
 void testApp::setup(){
 	ofSetVerticalSync(true);
 	ofBackgroundHex(0x00);
-
-	////////// FONT MAP
-	for(int i=0; i<11; ++i){
-		int fs = i*5+16;
-		ofTrueTypeFont ottf;
-		ottf.loadFont(FONT_NAME, fs, true, true);
-		fontMap[fs] = ottf;
-	}
-
-	std::map<int,ofTrueTypeFont>::iterator it = fontMap.lower_bound((int)32);
-	mFont = (it->second);
-	mFontSize = mFont.getSize();
-
 	//////////// graph
 	testGraphSetup();
 }
 
 //--------------------------------------------------------------
 void testApp::update(){
-	long long unsigned int t0 = AbsoluteToDuration(UpTime());
-	// put stuff to time here
-	long long unsigned int t1 = AbsoluteToDuration(UpTime());
-	cout << "update took: " << (t1-t0) << " millis"<<endl;
-
 	if(ofGetFrameNum()%120 == 0){
 		cout << ofGetFrameRate() << endl;
 	}
@@ -42,7 +20,10 @@ void testApp::update(){
 
 //--------------------------------------------------------------
 void testApp::draw(){
+	long long unsigned int t0 = AbsoluteToDuration(UpTime());
 	mGraph.draw();
+	long long unsigned int t1 = AbsoluteToDuration(UpTime());
+	cout << "draw took: " << (t1-t0) << " millis"<<endl;
 }
 
 //--------------------------------------------------------------
@@ -93,8 +74,8 @@ void testApp::dragEvent(ofDragInfo dragInfo){
 //--------------------------------------------------------------
 void testApp::testGraphSetup(){
 	vector<Node*> someNodes;
-	int numNodes = 100;
-	int numEdges = 800;
+	int numNodes = 10;
+	int numEdges = 80;
 	for(int i=0; i<numNodes; ++i){
 		Node *n = new Node("v"+ofToString(i));
 		someNodes.push_back(n);

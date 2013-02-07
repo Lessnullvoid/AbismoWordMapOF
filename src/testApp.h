@@ -22,11 +22,6 @@ class testApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
-		// font
-		ofTrueTypeFont mFont;
-		int mFontSize;
-		map<int, ofTrueTypeFont> fontMap;
-
 		// helpers
 		string fitStringToWidth(const string s, const int w, ofTrueTypeFont ttf);
 

@@ -2,6 +2,7 @@
 
 #include "ofConstants.h"
 #include "ofRectangle.h"
+#include "ofTrueTypeFont.h"
 #include "ofEvents.h"
 #include<map>
 #include<queue>
@@ -26,6 +27,8 @@ class PhysNode {
 		ofVec2f pos, vel;
 		float size;
 		string name;
+		// static font map
+		static map<int, ofTrueTypeFont> fontMap;
 };
 
 class Node: public PhysNode {

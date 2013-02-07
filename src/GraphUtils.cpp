@@ -3,11 +3,25 @@
 #include "ofGraphics.h"
 #include "ofLog.h"
 
+#define MAX_FONT_SIZE 64
+#define MIN_FONT_SIZE 16
+#define FONT_NAME "verdana.ttf"
+
+map<int,ofTrueTypeFont> PhysNode::fontMap = map<int,ofTrueTypeFont>();
+
 PhysNode::PhysNode(){
 	size = 20;
 	name = "";
 	pos = ofVec2f(ofRandom(ofGetWidth()),ofRandom(ofGetHeight()));
 	vel = ofVec2f(0,0);
+	if(fontMap.size() < 1){
+		for(int i=0; i<11; ++i){
+			int fs = i*5+MIN_FONT_SIZE;
+			ofTrueTypeFont ottf;
+			ottf.loadFont(FONT_NAME, fs, true, true);
+			fontMap[fs] = ottf;
+		}
+	}
 }
 PhysNode::~PhysNode(){}
 
@@ -38,6 +52,10 @@ void PhysNode::draw(){
 	ofNoFill();
 	ofSetColor(255);
 	ofCircle(pos,size/2);
+
+	std::map<int,ofTrueTypeFont>::iterator it = fontMap.lower_bound((int)10);
+	ofTrueTypeFont mFont = (it->second);
+	mFont.drawString(name, pos.x, pos.y);
 }
 
 
