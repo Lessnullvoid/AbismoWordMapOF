@@ -21,6 +21,7 @@ class PhysNode {
 		const float& getSize() const;
 		const ofRectangle getBoundingBox() const;
 		inline const bool isMouseInside(ofMouseEventArgs & args) const;
+		void fixCollision(PhysNode& on) const;
 		void update();
 		void draw();
 	protected:

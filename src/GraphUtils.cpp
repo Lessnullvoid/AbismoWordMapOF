@@ -6,7 +6,7 @@
 #define GROUP_SIZE 100
 
 PhysNode::PhysNode(){
-	size = 10;
+	size = 20;
 	name = "";
 	pos = ofVec2f(ofRandom(ofGetWidth()),ofRandom(ofGetHeight()));
 	vel = ofVec2f(0,0);
@@ -33,13 +33,24 @@ const ofRectangle PhysNode::getBoundingBox() const{
 	return ofRectangle(pos.x-size/2, pos.y-size/2, size, size);
 }
 
+void PhysNode::fixCollision(PhysNode& on) const{
+	ofRectangle obb = on.getBoundingBox();
+	ofRectangle mbb = getBoundingBox();
+	if(mbb.intersects(obb)){
+		on.pos += (on.pos-pos).scale(0.5);
+	}
+}
 void PhysNode::update(){
 	pos += vel;
 	pos.x = ofClamp(pos.x, size/2, ofGetWidth()-size/2-1);
 	pos.y = ofClamp(pos.y, size/2, ofGetHeight()-size/2-1);
 }
 void PhysNode::draw(){
+	ofFill();
 	ofSetColor(100,100);
+	ofRect(getBoundingBox());
+	ofNoFill();
+	ofSetColor(255);
 	ofRect(getBoundingBox());
 }
 
@@ -348,8 +359,7 @@ void Graph::update(){
 			set<PhysNode*>::const_iterator jt=it;
 			for(++jt; jt!=group.end(); ++jt){
 				PhysNode* pn1 = *jt;
-				// TODO: implement this in PhysNode
-				// pn0->checkCollision(pn1);
+				pn0->fixCollision(*pn1);
 			}
 		}
 		// clear set after collision checks
@@ -362,14 +372,14 @@ void Graph::draw(){
 	for (map<string,Edge*>::const_iterator it=theEdges.begin(); it!=theEdges.end(); ++it){
 		Edge* e = it->second;
 		if(e){
-			//e->draw();
+			e->draw();
 		}
 	}
 	// draw Nodes
 	for (map<string,Node*>::const_iterator it=theNodes.begin(); it!=theNodes.end(); ++it){
 		Node* n = it->second;
 		if(n){
-			n->draw();
+			//n->draw();
 		}
 	}
 }
