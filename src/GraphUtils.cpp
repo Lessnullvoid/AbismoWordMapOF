@@ -37,22 +37,24 @@ void PhysNode::fixCollision(PhysNode& on) const{
 	ofRectangle obb = on.getBoundingBox();
 	ofRectangle mbb = getBoundingBox();
 	if(mbb.intersects(obb)){
-		on.pos += (on.pos-pos).scale(0.5);
+		on.vel = (on.pos-pos).scale(0.9);
+		on.update();
 	}
 }
 void PhysNode::update(){
 	pos += vel;
+	if((pos.x<size/2) || (pos.x>ofGetWidth()-size/2) || (pos.y<size/2) || (pos.y>ofGetHeight()-size/2)){
+		vel.set(0,0);
+	}
 	pos.x = ofClamp(pos.x, size/2, ofGetWidth()-size/2-1);
 	pos.y = ofClamp(pos.y, size/2, ofGetHeight()-size/2-1);
 }
 void PhysNode::draw(){
 	ofFill();
 	ofSetColor(100,100);
-	//ofRect(getBoundingBox());
 	ofCircle(pos,size/2);
 	ofNoFill();
 	ofSetColor(255);
-	//ofRect(getBoundingBox());
 	ofCircle(pos,size/2);
 }
 
@@ -122,6 +124,8 @@ void Node::mouseMoved(ofMouseEventArgs & args){}
 void Node::mouseDragged(ofMouseEventArgs & args){}
 void Node::mousePressed(ofMouseEventArgs & args){
 	if(this->isMouseInside(args)){
+		// DEBUG
+		size += 10;
 		ofNotifyEvent(NodeClickEvent, *this);
 	}
 }
@@ -207,6 +211,8 @@ void Edge::mouseMoved(ofMouseEventArgs & args){}
 void Edge::mouseDragged(ofMouseEventArgs & args){}
 void Edge::mousePressed(ofMouseEventArgs & args){
 	if(this->isMouseInside(args)){
+		// DEBUG
+		size += 10;
 		ofNotifyEvent(EdgeClickEvent, *this);
 	}
 }
@@ -386,7 +392,7 @@ inline const int Graph::coordToSet(float x, float y) const {
 	return int(x/collisionGroupSize) + int(y/collisionGroupSize)*int(ofGetWidth()/collisionGroupSize);
 }
 
-// for debug
+// for DEBUG
 void Graph::calculateDists(){
 	int mi = (int)ofRandom(theNodes.size());
 	int i = 0;
@@ -402,7 +408,7 @@ void Graph::calculateDists(){
 	}
 }
 
-// for debug
+// for DEBUG
 void Graph::printGraph() const{
 	ofLogWarning("Nodes:")<< "";
 	for (map<string,Node*>::const_iterator it=theNodes.begin(); it!=theNodes.end(); ++it){
