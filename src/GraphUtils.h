@@ -17,6 +17,7 @@ class PhysNode {
 		~PhysNode();
 		void setVelocity(const ofVec2f& vel_);
 		void setSize(const float size_);
+		void setPos(const ofVec2f& pos_);
 		const string getName() const;
 		const ofVec2f& getPos() const;
 		const float& getSize() const;
@@ -90,6 +91,7 @@ class Graph {
 		void addEdgeToGraph(Edge& e);
 		void addNodeToQ(Node& n);
 		void calculateDists(Node& fromNode);
+		void openSubMenu(Edge& theEdge);
 		void orderGraph();
 		// physical
 		void update();
@@ -103,4 +105,6 @@ class Graph {
 		vector<Node*> orderedNodes;
 		vector<Edge*> orderedEdges;
 		queue<Node*> theQ;
+		// for drawing Graph
+		ofRectangle drawArea;
 };

@@ -34,8 +34,15 @@ void PhysNode::setSize(const float size_){
 	// keep it in-bounds
 	(it == fontMap.end())?(--it):(it);
 	ofTrueTypeFont mFont = (it->second);
-	boundingBox = mFont.getStringBoundingBox(name, pos.x-mFont.stringWidth(name)/2, pos.y);
+	boundingBox = mFont.getStringBoundingBox(name, pos.x, pos.y);
 }
+
+void PhysNode::setPos(const ofVec2f& pos_){
+	pos = pos_;
+	// to update boundingBox
+	setSize(getSize());
+}
+
 const string PhysNode::getName() const{
 	return name;
 }
@@ -58,7 +65,7 @@ void PhysNode::draw(){
 	ofSetColor(100,100);
 	ofRect(boundingBox);
 	ofSetColor(255);
-	mFont.drawString(name, pos.x-boundingBox.width/2, pos.y);
+	mFont.drawString(name, pos.x, pos.y);
 }
 
 inline const bool PhysNode::isMouseInside(ofMouseEventArgs & args) const {
@@ -71,7 +78,6 @@ inline const bool PhysNode::isMouseInside(ofMouseEventArgs & args) const {
 ofEvent<Node> Node::addNodeToGraph = ofEvent<Node>();
 
 Node::Node(const string name_): PhysNode(name_){
-	//name = name_;
 	distance = 1e9;
 	ofNotifyEvent(Node::addNodeToGraph, *this);
 	ofRegisterMouseEvents(this);
@@ -214,6 +220,8 @@ Graph::Graph(){
 	ofAddListener(Edge::addNodeToQ, this, &Graph::addNodeToQ);
 	ofAddListener(Node::addNodeToGraph, this, &Graph::addNodeToGraph);
 	ofAddListener(Edge::addEdgeToGraph, this, &Graph::addEdgeToGraph);
+	// draw area. hard coded for now
+	drawArea = ofRectangle(10,50,700,500);
 }
 
 Graph::~Graph(){
@@ -236,12 +244,19 @@ void Graph::addEdgeToGraph(Edge& e){
 	theEdges[e.getName()] = &e;
 	orderedEdges.push_back(&e);
 	// TODO: what to do when edge is clicked? open a sub menu?
-	// ofAddListener(e.EdgeClickEvent, this, &Graph::openSubMenu);
+	ofAddListener(e.EdgeClickEvent, this, &Graph::openSubMenu);
 }
 
 void Graph::addNodeToQ(Node& n){
 	// add to Q
 	theQ.push(&n);
+}
+
+// TODO: implement this
+// DEBUG
+void Graph::openSubMenu(Edge& theEdge){
+	// update graph
+	update();
 }
 
 void Graph::calculateDists(Node& fromNode){
@@ -264,6 +279,9 @@ void Graph::calculateDists(Node& fromNode){
 		theQ.pop();
 		n.process();
 	}
+	
+	// update graph
+	update();
 }
 
 void Graph::orderGraph(){
@@ -288,11 +306,58 @@ void Graph::orderGraph(){
 }
 
 // physical functions
+void Graph::update(){
+	float maxX, maxY, lineY, cX, cY;
+	maxX = maxY = lineY = cX = cY = 0;
+	
+	// TODO: mix edges and nodes somehow
+	for (map<string,Edge*>::const_iterator it=theEdges.begin(); it!=theEdges.end(); ++it){
+		Edge* e = it->second;
+		if((e) && (e->getSize() > 1)) {
+			// if next word is bigger than space available on this line
+			if(cX+e->getBoundingBox().width > drawArea.width){
+				cX = 0;
+				cY = maxY;
+				lineY = maxY;
+				maxX = 0;
+			}
+
+			// assume we have a legal position at (cX, cY) here
+			// TODO: ofTTF box starts at lower-left corner; need to fix placement
+			e->setPos(ofVec2f(drawArea.x+cX,drawArea.y+cY));
+
+			// update max values seen
+			if(cX+e->getBoundingBox().width > maxX){
+				maxX = cX+e->getBoundingBox().width;
+			}
+			if(cY+e->getBoundingBox().height > maxY){
+				maxY = cY+e->getBoundingBox().height;
+			}
+
+			// update cy, see if we can tuck another word underneath this one
+			if(cY+e->getBoundingBox().height < 0.5*maxY){
+				cY += e->getBoundingBox().height;
+			}
+			// no tuck
+			else {
+				cX = maxX + 5;
+				cY = lineY;
+			}
+		}
+	}
+	for (map<string,Node*>::const_iterator it=theNodes.begin(); it!=theNodes.end(); ++it){
+		Node* n = it->second;
+		if(n){
+			//n->draw();
+		}
+	}
+}
+
 void Graph::draw(){
 	// draw Edges
 	for (map<string,Edge*>::const_iterator it=theEdges.begin(); it!=theEdges.end(); ++it){
 		Edge* e = it->second;
-		if(e){
+		if(e) {
 			e->draw();
 		}
 	}
