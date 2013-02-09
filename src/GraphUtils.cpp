@@ -240,27 +240,17 @@ Graph::~Graph(){
 void Graph::addNodeToGraph(Node& n){
 	theNodes[n.getName()] = &n;
 	orderedNodes.push_back(&n);
-	// TODO: when clicked, not only calculate distances, but also:
-	//       (1) update PhysNode sizes
-	ofAddListener(n.NodeClickEvent, this, &Graph::calculateDists);
+	ofAddListener(n.NodeClickEvent, this, &Graph::nodeClickListener);
 }
 void Graph::addEdgeToGraph(Edge& e){
 	theEdges[e.getName()] = &e;
 	orderedEdges.push_back(&e);
-	// TODO: what to do when edge is clicked? open a sub menu?
-	ofAddListener(e.EdgeClickEvent, this, &Graph::openSubMenu);
+	ofAddListener(e.EdgeClickEvent, this, &Graph::edgeClickListener);
 }
 
 void Graph::addNodeToQ(Node& n){
 	// add to Q
 	theQ.push(&n);
-}
-
-// TODO: implement this
-// DEBUG
-void Graph::openSubMenu(Edge& theEdge){
-	// update graph
-	update();
 }
 
 void Graph::calculateDists(Node& fromNode){
@@ -283,9 +273,6 @@ void Graph::calculateDists(Node& fromNode){
 		theQ.pop();
 		n.process();
 	}
-	
-	// update graph
-	update();
 }
 
 void Graph::orderGraph(){
@@ -310,6 +297,18 @@ void Graph::orderGraph(){
 }
 
 // physical functions
+void Graph::nodeClickListener(Node& n) {
+	calculateDists(n);
+	// TODO: update PhysNode sizes after calculating distances
+	// update graph
+	update();
+}
+void Graph::edgeClickListener(Edge& e) {
+	// TODO: what to do when edge is clicked? open a sub menu?
+	// update graph
+	update();
+}
+
 void Graph::update(){
 	float maxX, maxY, lineY, cX, cY;
 	maxX = maxY = lineY = cX = cY = 0;
@@ -320,6 +319,7 @@ void Graph::update(){
 		if((e) && (e->getSize() > 1)) {
 			// if next word is bigger than space available on this line
 			if(cX+e->getBoundingBox().width > drawArea.width){
+				// TODO: re-do line and see if we can retuck some stuff
 				cX = 0;
 				cY = maxY;
 				lineY = maxY;
@@ -327,7 +327,6 @@ void Graph::update(){
 			}
 
 			// assume we have a legal position at (cX, cY) here
-			// TODO: ofTTF box starts at lower-left corner; need to fix placement
 			e->setPos(ofVec2f(drawArea.x+cX,drawArea.y+cY));
 
 			// update max values seen

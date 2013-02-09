@@ -91,9 +91,10 @@ class Graph {
 		void addEdgeToGraph(Edge& e);
 		void addNodeToQ(Node& n);
 		void calculateDists(Node& fromNode);
-		void openSubMenu(Edge& theEdge);
 		void orderGraph();
 		// physical
+		void nodeClickListener(Node& n);
+		void edgeClickListener(Edge& e);
 		void update();
 		void draw();
 		// debug
