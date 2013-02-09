@@ -11,7 +11,7 @@ map<int,ofTrueTypeFont> PhysNode::fontMap = map<int,ofTrueTypeFont>();
 
 PhysNode::PhysNode(const string name_){
 	name = name_;
-	pos = ofVec2f(ofRandom(ofGetWidth()),ofRandom(ofGetHeight()));
+	setPos(ofVec2f(ofRandom(ofGetWidth()),ofRandom(ofGetHeight())));
 	vel = ofVec2f(0,0);
 	if(fontMap.size() < 1){
 		for(int i=0; i<11; ++i){
@@ -339,7 +339,7 @@ void Graph::update(){
 			}
 
 			// update cy, see if we can tuck another word underneath this one
-			if(cY+e->getBoundingBox().height < 0.5*maxY){
+			if(cY+e->getBoundingBox().height < maxY-20){
 				cY += e->getBoundingBox().height;
 			}
 			// no tuck
