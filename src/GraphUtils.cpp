@@ -34,13 +34,15 @@ void PhysNode::setSize(const float size_){
 	// keep it in-bounds
 	(it == fontMap.end())?(--it):(it);
 	ofTrueTypeFont mFont = (it->second);
-	boundingBox = mFont.getStringBoundingBox(name, pos.x, pos.y);
+	// set size of bounding box
+	boundingBox.width = mFont.stringWidth(name);
+	boundingBox.height = mFont.stringHeight(name);
 }
 
 void PhysNode::setPos(const ofVec2f& pos_){
 	pos = pos_;
-	// to update boundingBox
-	setSize(getSize());
+	boundingBox.x = pos.x;
+	boundingBox.y = pos.y;
 }
 
 const string PhysNode::getName() const{
@@ -65,7 +67,9 @@ void PhysNode::draw(){
 	ofSetColor(100,100);
 	ofRect(boundingBox);
 	ofSetColor(255);
-	mFont.drawString(name, pos.x, pos.y);
+	// magic to account for the fact that rectangles draw from top-left and strings from bottom-left corner
+	ofRectangle tbb = mFont.getStringBoundingBox(name, pos.x, pos.y);
+	mFont.drawString(name, pos.x+(pos.x-tbb.x), pos.y+(pos.y-tbb.y));
 }
 
 inline const bool PhysNode::isMouseInside(ofMouseEventArgs & args) const {
