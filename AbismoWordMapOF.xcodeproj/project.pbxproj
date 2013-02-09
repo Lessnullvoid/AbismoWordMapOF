@@ -61,7 +61,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		AFA480451696089E00986842 /* AbismoWordMapOF.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = AbismoWordMapOF.app; path = /Users/thiago/Dev/openFrameworks/apps/myApps/AbismoWordMapOF/bin/AbismoWordMapOF.app; sourceTree = "<absolute>"; };
+		AF8CFCD116C5DB3B001A61F5 /* AbismoWordMapOF.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = AbismoWordMapOF.app; path = /Users/thiago/Dev/openFrameworks/apps/myApps/AbismoWordMapOF/bin/AbismoWordMapOF.app; sourceTree = "<absolute>"; };
 		AFB739B916BC91B300D61F26 /* GraphUtils.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GraphUtils.cpp; sourceTree = "<group>"; };
 		AFB739BA16BC91B300D61F26 /* GraphUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GraphUtils.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
@@ -223,7 +223,7 @@
 			);
 			name = AbismoWordMapOF;
 			productName = myOFApp;
-			productReference = AFA480451696089E00986842 /* AbismoWordMapOF.app */;
+			productReference = AF8CFCD116C5DB3B001A61F5 /* AbismoWordMapOF.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
