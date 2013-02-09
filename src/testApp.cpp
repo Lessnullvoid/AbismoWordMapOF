@@ -20,10 +20,7 @@ void testApp::update(){
 
 //--------------------------------------------------------------
 void testApp::draw(){
-	long long unsigned int t0 = AbsoluteToDuration(UpTime());
 	mGraph.draw();
-	long long unsigned int t1 = AbsoluteToDuration(UpTime());
-	cout << "draw took: " << (t1-t0) << " millis"<<endl;
 }
 
 //--------------------------------------------------------------
