@@ -320,13 +320,20 @@ void Graph::update(){
 			// if next word is bigger than space available on this line
 			if(cX+e->getBoundingBox().width > drawArea.width){
 				// TODO: re-do line and see if we can retuck some stuff
-				cX = 0;
 				cY = maxY;
 				lineY = maxY;
+				cX = 0;
 				maxX = 0;
 			}
+			// have a valid cX here
 
-			// assume we have a legal position at (cX, cY) here
+			// check cy to see if we can tuck this word here
+			if(cY+e->getBoundingBox().height > maxY-5) {
+				cY = lineY;
+				cX = maxX + 5;
+			}
+
+			// have a valid (cX,cY) here
 			e->setPos(ofVec2f(drawArea.x+cX,drawArea.y+cY));
 
 			// update max values seen
@@ -337,15 +344,8 @@ void Graph::update(){
 				maxY = cY+e->getBoundingBox().height;
 			}
 
-			// update cy, see if we can tuck another word underneath this one
-			if(cY+e->getBoundingBox().height < maxY-20){
-				cY += e->getBoundingBox().height;
-			}
-			// no tuck
-			else {
-				cX = maxX + 5;
-				cY = lineY;
-			}
+			// finally update cX,cY
+			cY += e->getBoundingBox().height;
 		}
 	}
 	for (map<string,Node*>::const_iterator it=theNodes.begin(); it!=theNodes.end(); ++it){
@@ -368,7 +368,7 @@ void Graph::draw(){
 	for (map<string,Node*>::const_iterator it=theNodes.begin(); it!=theNodes.end(); ++it){
 		Node* n = it->second;
 		if(n){
-			n->draw();
+			//n->draw();
 		}
 	}
 }
