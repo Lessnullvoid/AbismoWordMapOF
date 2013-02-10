@@ -317,6 +317,13 @@ void Graph::update(){
 	for (map<string,Edge*>::const_iterator it=theEdges.begin(); it!=theEdges.end(); ++it){
 		Edge* e = it->second;
 		if((e) && (e->getSize() > 1)) {
+			// check cy to see if we can tuck this word here
+			if(cY+e->getBoundingBox().height > maxY-5) {
+				cY = lineY;
+				cX = maxX + 5;
+			}
+			// have valid cY here
+
 			// if next word is bigger than space available on this line
 			if(cX+e->getBoundingBox().width > drawArea.width){
 				// TODO: re-do line and see if we can retuck some stuff
@@ -324,13 +331,6 @@ void Graph::update(){
 				lineY = maxY;
 				cX = 0;
 				maxX = 0;
-			}
-			// have a valid cX here
-
-			// check cy to see if we can tuck this word here
-			if(cY+e->getBoundingBox().height > maxY-5) {
-				cY = lineY;
-				cX = maxX + 5;
 			}
 
 			// have a valid (cX,cY) here
