@@ -312,7 +312,9 @@ void Graph::edgeClickListener(Edge& e) {
 void Graph::update(){
 	float maxX, maxY, lineY, cX, cY;
 	maxX = maxY = lineY = cX = cY = 0;
-	
+	int numElementsThisLine = 0;
+	bool reDoLine = true;
+
 	// TODO: mix edges and nodes somehow
 	for (map<string,Edge*>::const_iterator it=theEdges.begin(); it!=theEdges.end(); ++it){
 		Edge* e = it->second;
@@ -326,15 +328,29 @@ void Graph::update(){
 
 			// if next word is bigger than space available on this line
 			if(cX+e->getBoundingBox().width > drawArea.width){
-				// TODO: re-do line and see if we can retuck some stuff
-				cY = maxY;
-				lineY = maxY;
-				cX = 0;
-				maxX = 0;
+				// place each line 2 times
+				if(reDoLine) {
+					advance(it,-numElementsThisLine);
+					cX = 0;
+					maxX = 0;
+					numElementsThisLine = 0;
+					reDoLine = false;
+					continue;
+				}
+				// if we've already done this line twice, go to next line
+				else {
+					cY = maxY;
+					lineY = maxY;
+					cX = 0;
+					maxX = 0;
+					numElementsThisLine = 0;
+					reDoLine = true;
+				}
 			}
 
 			// have a valid (cX,cY) here
 			e->setPos(ofVec2f(drawArea.x+cX,drawArea.y+cY));
+			numElementsThisLine++;
 
 			// update max values seen
 			if(cX+e->getBoundingBox().width > maxX){
