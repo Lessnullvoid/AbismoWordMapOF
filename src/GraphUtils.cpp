@@ -312,11 +312,11 @@ void Graph::edgeClickListener(Edge& e) {
 void Graph::update(){
 	float maxX, maxY, lineY, cX, cY;
 	maxX = maxY = lineY = cX = cY = 0;
-	int numElementsThisLine = 0;
 	bool reDoLine = true;
+	map<string,Edge*>::const_iterator firstInLine=theEdges.begin();
 
 	// TODO: mix edges and nodes somehow
-	for (map<string,Edge*>::const_iterator it=theEdges.begin(); it!=theEdges.end(); ++it){
+	for (map<string,Edge*>::const_iterator it=theEdges.begin(); it!=theEdges.end(); ){
 		Edge* e = it->second;
 		if((e) && (e->getSize() > 1)) {
 			// check cy to see if we can tuck this word here
@@ -330,10 +330,9 @@ void Graph::update(){
 			if(cX+e->getBoundingBox().width > drawArea.width){
 				// place each line 2 times
 				if(reDoLine) {
-					advance(it,-numElementsThisLine);
+					it = firstInLine;
 					cX = 0;
 					maxX = 0;
-					numElementsThisLine = 0;
 					reDoLine = false;
 					continue;
 				}
@@ -343,14 +342,13 @@ void Graph::update(){
 					lineY = maxY;
 					cX = 0;
 					maxX = 0;
-					numElementsThisLine = 0;
+					firstInLine = it;
 					reDoLine = true;
 				}
 			}
 
 			// have a valid (cX,cY) here
 			e->setPos(ofVec2f(drawArea.x+cX,drawArea.y+cY));
-			numElementsThisLine++;
 
 			// update max values seen
 			if(cX+e->getBoundingBox().width > maxX){
@@ -363,6 +361,8 @@ void Graph::update(){
 			// finally update cX,cY
 			cY += e->getBoundingBox().height;
 		}
+		// hack to keep it from incrementing when we re-do a line
+		++it;
 	}
 	for (map<string,Node*>::const_iterator it=theNodes.begin(); it!=theNodes.end(); ++it){
 		Node* n = it->second;
